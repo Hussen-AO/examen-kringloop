@@ -24,13 +24,7 @@ class Gebruiker {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // 1 gebruiker ophalen
-    public function getById($id) {
-        $sql = "SELECT id, gebruikersnaam, rollen FROM gebruiker WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([":id" => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+
 
     // check of gebruikersnaam al bestaat
     public function bestaatGebruikersnaam($gebruikersnaam) {

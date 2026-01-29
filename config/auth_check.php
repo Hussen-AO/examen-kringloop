@@ -12,8 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Controleert of gebruiker is ingelogd
-// Stuurt naar login pagina als user_id niet gezet is
+// checkt of variabele session userid leeg waar wordt je naar login verwijst
 function requireLogin(): void {
     if (empty($_SESSION['user_id'])) {
         header("Location: /pages/login.php");
@@ -25,7 +24,6 @@ function requireLogin(): void {
 // Directie gebruikers hebben toegang tot alles
 // Andere gebruikers moeten in de toegestane rollen staan
 function requireAnyRole(array $rolesAllowed): void {
-    // Zorg dat gebruiker ingelogd is
     requireLogin();
 
     // Haal rol op uit sessie (default lege string als niet gezet)
@@ -38,8 +36,7 @@ function requireAnyRole(array $rolesAllowed): void {
 
     // Controleer of rol in toegestane rollen staat
     if (!in_array($role, $rolesAllowed, true)) {
-        // Stuur naar dashboard als geen toegang
-        header("Location: ../pages/dashboard.php");
+        header("Location: ../index.php");
         exit;
     }
 }

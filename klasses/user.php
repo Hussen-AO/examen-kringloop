@@ -13,6 +13,7 @@ class User {
     public $conn;
 
     // Constructor - initialiseert de database verbinding
+    //this-> wordt gebruikt zodat we niet steeds opnieuw hoeven te doorgeven
     public function __construct($conn) {
         $this->conn = $conn;
     }
@@ -22,7 +23,7 @@ class User {
         // SQL query om gebruiker te zoeken
         $sql = "SELECT * FROM gebruiker WHERE gebruikersnaam = :naam LIMIT 1";
         
-        // Prepare en execute de query met parameter binding voor veiligheid
+        // Prepare en execute gebruiken we tegen beveiling tegen sql-injecties
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':naam' => $gebruikersnaam]);
         

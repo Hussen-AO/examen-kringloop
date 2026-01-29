@@ -30,7 +30,8 @@ $data = [
     "rollen" => ""
 ];
 
-// formulier verwerken
+// formulier verwerken 
+//REQUEST_METHOD controllert of formulier is verzonden
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $gebruikersnaam = trim($_POST["gebruikersnaam"] ?? "");
@@ -86,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <br><br>
 
 <label>Rollen</label><br>
-<input type="text" name="rollen" value="<?php echo htmlspecialchars($data["rollen"]); ?>" placeholder="bijv: admin" required>
+<input type="text" name="rollen" value="<?php echo htmlspecialchars($data["rollen"]); ?>" placeholder="bijv: directie" required>
 <br><br>
 
 <button type="submit">Opslaan</button>
