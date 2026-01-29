@@ -11,45 +11,22 @@ class Planning {
 
     public $conn; // database verbinding
 
-    /**
-     * Constructor - initialiseert de Planning klasse met een database verbinding
-     * 
-     * @param PDO $conn Database verbinding object
-     */
     public function __construct($conn) {
         $this->conn = $conn;
     }
 
-    /**
-     * Haalt alle klanten op uit de database voor gebruik in een dropdown menu
-     * Geeft klanten gesorteerd op naam
-     * 
-     * @return array Associatieve array met id en naam van klanten
-     */
+  
     public function getKlanten() {
         $sql = "SELECT id, naam FROM klant ORDER BY naam";
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Haalt alle artikelen op uit de database voor gebruik in een dropdown menu
-     * Geeft artikelen alfabetisch gesorteerd
-     * 
-     * @return array Associatieve array met id en naam van artikelen
-     */
+    
     public function getArtikelen() {
         $sql = "SELECT id, naam FROM artikel ORDER BY naam";
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Haalt alle planningsgegevens op uit de database
-     * Kan optioneel gefilterd worden op type (ophalen of bezorgen)
-     * Gegevens worden altijd gesorteerd op afspraakdatum
-     * 
-     * @param string $type Optioneel filter op ophalen_of_bezorgen veld
-     * @return array Array met alle planning records inclusief klant- en artikelgegevens
-     */
     public function getOverzicht($type = "") {
         // Als geen filter opgegeven, return alle planningen
         if ($type == "") {
@@ -75,17 +52,7 @@ class Planning {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Voegt een nieuwe ritplanning toe aan de database
-     * Slaat klantinfo, artikel, kenteken en afspraakgegevens op
-     * 
-     * @param int $klant_id ID van de klant
-     * @param int $artikel_id ID van het artikel
-     * @param string $kenteken Kenteken van het voertuig
-     * @param string $type Type van vervoer (ophalen of bezorgen)
-     * @param string $afspraak_op Datum en tijd van de afspraak
-     * @return bool True als de insert succesvol was, false anderszins
-     */
+
     public function toevoegen($klant_id, $artikel_id, $kenteken, $type, $afspraak_op) {
         $sql = "INSERT INTO planning (artikel_id, klant_id, kenteken, ophalen_of_bezorgen, afspraak_op)
                 VALUES (:artikel_id, :klant_id, :kenteken, :type, :afspraak_op)";

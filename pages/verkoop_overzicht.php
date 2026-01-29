@@ -76,7 +76,7 @@ $verkopen = $verkoop->getOverzicht($van, $tot);
 
 </table>
 
-<a href="dashboard.php">Terug</a>
+<a href="../index.php">Terug</a>
 
 </body>
 </html>
