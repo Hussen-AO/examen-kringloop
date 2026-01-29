@@ -4,34 +4,37 @@ Naam script     : voorraad_form.php
 Versie          : 1.1
 Datum           : 28-01-2026
 Beschrijving    : Voorraad toevoegen of wijzigen (1 formulier)
-Auteur          : 
+Auteur          : jayjay stamm
 */
 
+// Controleer of gebruiker ingelogd is en het juiste rol heeft
 require_once "../config/auth_check.php";
 requireAnyRole(['magazijnmedewerker ']);
 
+// Laad benodigde classes en configuratie
 require_once "../config/auth_check.php";
 require_once "../config/Database.php";
 require_once "../klasses/Voorraad.php";
 
-// database verbinden
+// Initialiseer database verbinding
 $db = new Database();
 $conn = $db->connect();
 
-// voorraad object
+// Maak een nieuw Voorraad object voor database operaties
 $voorraad = new Voorraad($conn);
 
+// Variabelen voor feedback aan gebruiker
 $fout = "";
 $goed = "";
 
-// id ophalen (als er een id is, is het wijzigen)
+// Haal het ID op uit de URL - als er een ID is, gaat het om wijzigen in plaats van toevoegen
 $id = $_GET["id"] ?? "";
 
-// dropdown data
+// Laad alle artikelen en statussen voor de dropdown menu's
 $artikelen = $voorraad->getArtikelen();
 $statussen = $voorraad->getStatussen();
 
-// standaard waardes
+// Stel standaard waarden in voor het formulier
 $data = [
     "artikel_id" => "",
     "aantal" => "",
@@ -39,47 +42,53 @@ $data = [
     "status_id" => ""
 ];
 
-// als wijzigen, voorraad item ophalen
+// Als er een ID is gegeven, laad het bestaande voorraad item
 if ($id != "") {
+    // Valideer dat het ID een nummer is
     if (!is_numeric($id)) {
         die("Ongeldig id.");
     }
 
+    // Zoek het voorraad item in de database
     $gevonden = $voorraad->getById($id);
     if (!$gevonden) {
         die("Voorraad item niet gevonden.");
     }
 
+    // Vul de gegevens met bestaande waarden
     $data = $gevonden;
 }
 
-// formulier verwerken
+// Verwerk het formulier als het ingediend is
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
+    // Haal formuliergegevens op
     $artikel_id = $_POST["artikel_id"] ?? "";
     $aantal = trim($_POST["aantal"] ?? "");
     $locatie = trim($_POST["locatie"] ?? "");
     $status_id = $_POST["status_id"] ?? "";
 
-    // bij wijzigen mag artikel_id niet leeg zijn, maar we wijzigen hem niet
+    // Bij wijzigen mag artikel_id niet leeg zijn, maar we wijzigen hem niet
     if ($id != "" && $data["artikel_id"] != "") {
         $artikel_id = $data["artikel_id"];
     }
 
-    // simpele validatie
+    // Valideer dat alle verplichte velden ingevuld zijn
     if ($artikel_id == "" || $aantal == "" || $locatie == "" || $status_id == "") {
         $fout = "Vul alle velden in.";
     } elseif (!is_numeric($aantal) || $aantal < 0) {
+        // Controleer of het aantal een geldig positief getal is
         $fout = "Aantal moet een nummer zijn.";
     } elseif (strlen($locatie) < 1 || strlen($locatie) > 30) {
+        // Controleer of de locatie het juiste lengte heeft
         $fout = "Locatie is niet geldig.";
     } else {
-
+        // Controleer of we toevoegen of wijzigen
         if ($id == "") {
+            // Voeg nieuwe voorraad toe
             $voorraad->toevoegen($artikel_id, $aantal, $locatie, $status_id);
             $goed = "Voorraad is toegevoegd.";
 
-            // velden leegmaken
+            // Leegmaken van formuliervelden na succesvol toevoegen
             $data = [
                 "artikel_id" => "",
                 "aantal" => "",
@@ -87,9 +96,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 "status_id" => ""
             ];
         } else {
+            // Wijzig bestaande voorraad
             $voorraad->wijzigen($id, $aantal, $locatie, $status_id);
             $goed = "Voorraad is aangepast.";
 
+            // Herlaad de gegevens om zeker te zijn van de update
             $data = $voorraad->getById($id);
         }
     }

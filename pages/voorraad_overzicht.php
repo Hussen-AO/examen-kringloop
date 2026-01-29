@@ -4,46 +4,50 @@ Naam script     : voorraad_overzicht.php
 Versie          : 1.1
 Datum           : 28-01-2026
 Beschrijving    : Overzicht voorraad + verwijderen met bevestiging
-Auteur          : 
+Auteur          : jayjay stam
 */
 
+// Controleer of gebruiker ingelogd is en het juiste rol heeft
 require_once "../config/auth_check.php";
 requireAnyRole(['magazijnmedewerker , winkelpersoneel']);
 
+// Laad benodigde classes en configuratie
 require_once "../config/auth_check.php";
 require_once "../config/Database.php";
 require_once "../klasses/Voorraad.php";
 
-// database verbinden
+// Initialiseer database verbinding
 $db = new Database();
 $conn = $db->connect();
 
-// voorraad object
+// Maak een nieuw Voorraad object voor database operaties
 $voorraad = new Voorraad($conn);
 
+// Variabelen voor feedback aan gebruiker
 $fout = "";
 $goed = "";
 
-// zoeken
+// Haal de zoekterm op uit de URL parameters
 $zoek = trim($_GET["zoek"] ?? "");
 
-// delete bevestiging (zelfde pagina)
+// Haal het delete ID op - gebruikt voor bevestigingsdialoog
 $delete_id = $_GET["delete_id"] ?? "";
 
-// als echt verwijderen is gedrukt
+// Verwerk de delete request als het formulier is ingediend
 if (isset($_POST["verwijder"]) && isset($_POST["id"])) {
-
+    // Haal het ID op en valideer het
     $id = $_POST["id"];
 
     if ($id == "" || !is_numeric($id)) {
         $fout = "Ongeldig id.";
     } else {
+        // Verwijder het voorraad item
         $voorraad->verwijderen($id);
         $goed = "Voorraad item is verwijderd.";
     }
 }
 
-// overzicht ophalen
+// Haal het voorraad overzicht op, optioneel gefilterd op zoekterm
 $items = $voorraad->getOverzicht($zoek);
 ?>
 <!DOCTYPE html>

@@ -4,34 +4,53 @@ Naam script     : Voorraad.php
 Versie          : 1.2
 Datum           : 28-01-2026
 Beschrijving    : Class voor voorraad functies (CRUD)
-Auteur          : 
+Auteur          : jayjay stam 
 */
 
 class Voorraad {
 
     public $conn; // database verbinding
 
-    // constructor om database verbinding mee te geven
+    /**
+     * Constructor - initialiseert de Voorraad klasse met een database verbinding
+     * 
+     * @param PDO $conn Database verbinding object
+     */
     public function __construct($conn) {
         $this->conn = $conn;
     }
 
-    // alle artikelen ophalen voor dropdown
+    /**
+     * Haalt alle artikelen op uit de database voor gebruik in een dropdown menu
+     * Geeft artikelen gesorteerd op naam
+     * 
+     * @return array
+     */
     public function getArtikelen() {
         $sql = "SELECT id, naam FROM artikel ORDER BY naam";
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // alle statussen ophalen
+    /**
+     * Haalt alle statussen op uit de database voor gebruik in een dropdown menu
+     * Geeft statussen alfabetisch gesorteerd
+     * 
+     * @return array 
+     */
     public function getStatussen() {
         $sql = "SELECT id, status FROM status ORDER BY status";
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // overzicht van voorraad ophalen met zoeken
+    /**
+     * Haalt alle voorraadgegevens op uit de database
+     * Kan optioneel gefilterd worden op artikel id of artikel naam
+     * 
+     * @param string $zoek 
+     * @return array 
+     */
     public function getOverzicht($zoek = "") {
-
-        // als er niet gezocht wordt
+        // Als er niet gezocht wordt, return alles
         if ($zoek == "") {
             $sql = "SELECT v.id, a.id AS artikel_id, a.naam, v.aantal, v.locatie, s.status, v.ingeboekt_op
                     FROM voorraad v
@@ -41,7 +60,7 @@ class Voorraad {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // als er wel gezocht wordt
+        // Als er wel gezocht wordt op artikel id of naam
         } else {
             $sql = "SELECT v.id, a.id AS artikel_id, a.naam, v.aantal, v.locatie, s.status, v.ingeboekt_op
                     FROM voorraad v
@@ -57,7 +76,12 @@ class Voorraad {
         }
     }
 
-    // 1 voorraad item ophalen
+    /**
+     * Haalt een enkel voorraad item op aan de hand van het ID
+     * 
+     * @param int $id 
+     * @return array 
+     */
     public function getById($id) {
         $sql = "SELECT * FROM voorraad WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
@@ -65,7 +89,16 @@ class Voorraad {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // voorraad toevoegen
+    /**
+     * Voegt een nieuw voorraad item toe aan de database
+     * Slaat artikel, aantal, locatie en status op met huidige timestamp
+     * 
+     * @param int $artikel_id 
+     * @param int $aantal 
+     * @param string $locatie 
+     * @param int $status_id 
+     * @return bool 
+     */
     public function toevoegen($artikel_id, $aantal, $locatie, $status_id) {
         $sql = "INSERT INTO voorraad (artikel_id, locatie, aantal, status_id, ingeboekt_op)
                 VALUES (:artikel_id, :locatie, :aantal, :status_id, NOW())";
@@ -78,7 +111,16 @@ class Voorraad {
         ]);
     }
 
-    // voorraad wijzigen
+    /**
+     * Wijzigt een bestaand voorraad item in de database
+     * Update aantal, locatie en status voor het gegeven ID
+     * 
+     * @param int $id 
+     * @param int $aantal 
+     * @param string $locatie 
+     * @param int $status_id 
+     * @return bool 
+     */
     public function wijzigen($id, $aantal, $locatie, $status_id) {
         $sql = "UPDATE voorraad SET aantal = :aantal, locatie = :locatie, status_id = :status_id WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
@@ -90,7 +132,12 @@ class Voorraad {
         ]);
     }
 
-    // voorraad verwijderen
+    /**
+     * Verwijdert een voorraad item uit de database
+     * 
+     * @param int $id 
+     * @return bool 
+     */
     public function verwijderen($id) {
         $sql = "DELETE FROM voorraad WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
