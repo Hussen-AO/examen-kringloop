@@ -1,49 +1,81 @@
 <?php
-// Haal de rol van de huidige gebruiker op uit de sessie
 $role = $_SESSION['role'] ?? '';
 ?>
 
-<header style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #ddd;">
-    
-    <nav style="display:flex; gap:15px; align-items:center;">
-        <strong>Dashboard</strong>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
 
-        <?php if ($role === 'directie') { ?>
-            <a href="index.php">Home</a>
-            <a href="pages/artikel_overzicht.php">Artikelen</a>
-            <a href="pages/gebruiker_overzicht.php">gebruiker overzicht</a>
-            <a href="pages/klant_overzicht.php">Klanten</a>
-            <a href="pages/maand_overzicht.php">Maand overzicht</a>
-            <a href="pages/voorraad_overzicht.php">Winkelvoorraad</a>
-            <a href="pages/verkoop_overzicht.php">Verkopen</a>
-            <a href="pages/planning_overzicht.php">Ritplanning</a>
+    <!-- Bootstrap CSS (GEEN JS nodig) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <?php } elseif ($role === 'winkelpersoneel') { ?>
-            <a href="index.php">Home</a>
-            <a href="pages/artikel_overzicht.php">Artikelen</a>
-            <a href="pages/voorraad_overzicht.php">Winkelvoorraad</a>
-            <a href="pages/verkoop_overzicht.php">Verkopen</a>
-            <a href="pages/klant_overzicht.php">Klanten</a>
+    <!-- Eigen CSS -->
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
 
-        <?php } elseif ($role === 'magazijnmedewerker') { ?>
-            <a href="index.php">Home</a>
-            <a href="pages/voorraad_overzicht.php">Magazijn voorraad</a>
+<header class="app-navbar">
+    <div class="header-container">
+        <div class="header-row">
 
+            <!-- Linkerkant: navigatie -->
+            <nav class="nav-row">
 
-        <?php } elseif ($role === 'chauffeur') { ?>
-            <a href="index.php">Home</a>
-            <a href="pages/planning_overzicht.php">Ritplanning</a>
-        <?php } ?>
-    </nav>
+                <strong class="navbar-brand text-white mb-0">Dashboard</strong>
 
-    <!-- Gebruiker info en uitlog knop -->
-    <div style="display:flex; align-items:center; gap:10px;">
-        <!-- Toon huidige rol van de gebruiker -->
-        <small><?php echo htmlspecialchars($role); ?></small>
+                <a class="nav-link" href="index.php">Home</a>
+                <a class="nav-link" href="pages/artikel_overzicht.php">Artikelen</a>
 
-        <form method="post" action="pages/logout.php" style="margin:0;">
-            <button type="submit">Uitloggen</button>
-        </form>
+                <?php if ($role === 'directie') { ?>
+                    <!-- Admin dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle">
+                            Admin ▾
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="pages/gebruiker_overzicht.php">Gebruikers</a></li>
+                            <li><a href="pages/maand_overzicht.php">Maand overzicht</a></li>
+                            <li><a href="pages/voorraad_overzicht.php">Winkelvoorraad</a></li>
+                            <li><a href="pages/verkoop_overzicht.php">Verkopen</a></li>
+                        </ul>
+                    </div>
+
+                    <a class="nav-link" href="pages/planning_overzicht.php">Ritplanning</a>
+
+                <?php } elseif ($role === 'winkelpersoneel') { ?>
+                    <a class="nav-link" href="pages/voorraad_overzicht.php">Winkelvoorraad</a>
+                    <a class="nav-link" href="pages/verkoop_overzicht.php">Verkopen</a>
+                    <a class="nav-link" href="pages/klant_overzicht.php">Klanten</a>
+
+                <?php } elseif ($role === 'magazijnmedewerker') { ?>
+                    <a class="nav-link" href="pages/voorraad_overzicht.php">Magazijnvoorraad</a>
+
+                <?php } elseif ($role === 'chauffeur') { ?>
+                    <a class="nav-link" href="pages/planning_overzicht.php">Ritplanning</a>
+                <?php } ?>
+
+            </nav>
+
+            <!-- Rechterkant: rol + logout -->
+            <div class="d-flex align-items-center gap-3">
+
+                <span class="badge role-badge text-capitalize">
+                    <?php echo htmlspecialchars($role); ?>
+                </span>
+
+                <form method="post" action="pages/logout.php" class="m-0">
+                    <button type="submit" class="btn btn-outline-primary btn-sm logout-btn">
+                        Uitloggen
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
     </div>
-
 </header>
+
+</body>
+</html>
