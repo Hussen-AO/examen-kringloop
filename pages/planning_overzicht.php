@@ -4,27 +4,29 @@ Naam script     : planning_overzicht.php
 Versie          : 1.1
 Datum           : 28-01-2026
 Beschrijving    : Overzicht van ritplanning
-Auteur          : 
+Auteur          :  jayjay stam
 */
 
+// Controleer of gebruiker ingelogd is en het juiste rol heeft
 require_once "../config/auth_check.php";
 requireAnyRole(['chauffeur']);
 
+// Laad benodigde classes en configuratie
 require_once "../config/auth_check.php";
 require_once "../config/Database.php";
 require_once "../klasses/Planning.php";
 
-// database verbinden
+// Initialiseer database verbinding
 $db = new Database();
 $conn = $db->connect();
 
-// planning object
+// Maak een nieuw Planning object voor database operaties
 $planning = new Planning($conn);
 
-// filter type ophalen
+// Haal het filtertype op uit de URL parameters (ophalen, bezorgen of leeg voor alles)
 $type = $_GET["type"] ?? "";
 
-// overzicht ophalen
+// Haal alle ritten op, optioneel gefilterd op type
 $ritten = $planning->getOverzicht($type);
 ?>
 <!DOCTYPE html>

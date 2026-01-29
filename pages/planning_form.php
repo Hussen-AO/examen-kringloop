@@ -4,44 +4,50 @@ Naam script     : planning_form.php
 Versie          : 1.1
 Datum           : 28-01-2026
 Beschrijving    : Ritplanning toevoegen (1 formulier)
-Auteur          : 
+Auteur          : jayjay stam
 */
 
+// Controleer of gebruiker ingelogd is en het juiste rol heeft
 require_once "../config/auth_check.php";
 requireAnyRole(['chauffeur']);
 
+// Laad benodigde classes en configuratie
 require_once "../config/auth_check.php";
 require_once "../config/Database.php";
 require_once "../klasses/Planning.php";
 
-// database verbinden
+// Initialiseer database verbinding
 $db = new Database();
 $conn = $db->connect();
 
-// planning object
+// Maak een nieuw Planning object voor database operaties
 $planning = new Planning($conn);
 
+// Variabelen voor feedback aan gebruiker
 $fout = "";
 $goed = "";
 
-// dropdown data
+// Laad alle klanten en artikelen voor de dropdown menu's
 $klanten = $planning->getKlanten();
 $artikelen = $planning->getArtikelen();
 
+// Verwerk het formulier als het ingediend is
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
+    // Haal formuliergegevens op en zet ze in variabelen
     $klant_id = $_POST["klant_id"] ?? "";
     $artikel_id = $_POST["artikel_id"] ?? "";
     $kenteken = strtoupper(trim($_POST["kenteken"] ?? ""));
     $type = $_POST["type"] ?? "";
     $afspraak_op = $_POST["afspraak_op"] ?? "";
 
-    // simpele validatie
+    // Valideer dat alle verplichte velden ingevuld zijn
     if ($klant_id == "" || $artikel_id == "" || $kenteken == "" || $type == "" || $afspraak_op == "") {
         $fout = "Vul alle velden in.";
     } elseif (strlen($kenteken) < 4 || strlen($kenteken) > 12) {
+        // Controleer of het kenteken het juiste formaat heeft
         $fout = "Kenteken is niet geldig.";
     } else {
+        // Als alles klopt, voeg de nieuwe rit toe aan de database
         $planning->toevoegen($klant_id, $artikel_id, $kenteken, $type, $afspraak_op);
         $goed = "Rit is toegevoegd.";
     }
