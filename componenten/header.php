@@ -1,10 +1,5 @@
 <?php
-/*
-Naam script     : header.php
-auteur          : tijs
-Beschrijving    : Header met navigatie op basis van rol + uitloggen
-*/
-
+// Haal de rol van de huidige gebruiker op uit de sessie
 $role = $_SESSION['role'] ?? '';
 ?>
 
@@ -34,13 +29,16 @@ $role = $_SESSION['role'] ?? '';
             <a href="index.php">Home</a>
             <a href="pages/voorraad_overzicht.php">Magazijn voorraad</a>
 
+
         <?php } elseif ($role === 'chauffeur') { ?>
             <a href="index.php">Home</a>
             <a href="pages/planning_overzicht.php">Ritplanning</a>
         <?php } ?>
     </nav>
 
+    <!-- Gebruiker info en uitlog knop -->
     <div style="display:flex; align-items:center; gap:10px;">
+        <!-- Toon huidige rol van de gebruiker -->
         <small><?php echo htmlspecialchars($role); ?></small>
 
         <form method="post" action="pages/logout.php" style="margin:0;">
