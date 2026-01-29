@@ -71,24 +71,29 @@ class Verkoop {
             ":artikel_id" => $artikel_id
         ]);
     }
- public function getOmzetMaand(int $jaar, int $maand): float
-{
-    $sql = "
-        SELECT COALESCE(SUM(a.prijs_ex_btw), 0) AS omzet
-        FROM verkopen v
-        JOIN artikel a ON a.id = v.artikel_id
-        WHERE YEAR(v.verkocht_op) = :jaar
-          AND MONTH(v.verkocht_op) = :maand
-    ";
+    
+ // Berekent totale omzet voor een bepaalde maand en jaar
+    public function getOmzetMaand(int $jaar, int $maand): float
+    {
+        // SQL query om totale prijs van alle verkopen in een bepaalde maand op te tellen
+        $sql = "
+            SELECT COALESCE(SUM(a.prijs_ex_btw), 0) AS omzet
+            FROM verkopen v
+            JOIN artikel a ON a.id = v.artikel_id
+            WHERE YEAR(v.verkocht_op) = :jaar
+              AND MONTH(v.verkocht_op) = :maand
+        ";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute([
-        ":jaar" => $jaar,
-        ":maand" => $maand
-    ]);
+        // Bereid query voor en voer uit met jaar en maand parameters
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ":jaar" => $jaar,
+            ":maand" => $maand
+        ]);
 
-    return (float) $stmt->fetchColumn();
-}
+        // Geef het omzet bedrag terug als float
+        return (float) $stmt->fetchColumn();
+    }
 
 }
 ?>
