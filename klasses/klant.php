@@ -16,7 +16,7 @@ class Klant {
         $this->conn = $conn;
     }
 
-    // overzicht ophalen (met zoeken)
+    // overzicht ophalen
     public function getOverzicht($zoek = "") {
 
         if ($zoek == "") {

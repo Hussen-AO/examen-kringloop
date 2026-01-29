@@ -46,6 +46,8 @@ if (isset($_POST["verwijder"]) && isset($_POST["id"])) {
 // overzicht ophalen
 $artikelen = $artikel->getOverzicht($zoek);
 ?>
+
+//de body
 <!DOCTYPE html>
 <html>
 <head>

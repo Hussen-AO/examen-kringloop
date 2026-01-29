@@ -22,7 +22,7 @@ class Artikel {
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // overzicht ophalen (met zoeken)
+    // overzicht ophalen
     public function getOverzicht($zoek = "") {
 
         if ($zoek == "") {

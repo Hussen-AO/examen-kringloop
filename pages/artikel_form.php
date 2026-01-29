@@ -7,7 +7,9 @@ Beschrijving    : Artikel toevoegen of wijzigen (1 formulier)
 Auteur          : Sam
 */
 
+//hier worden de volgende file meegenomen in de form:
 require_once "../config/auth_check.php";
+//
 requireAnyRole(['winkelpersoneel']);
 
 require_once "../config/auth_check.php";
