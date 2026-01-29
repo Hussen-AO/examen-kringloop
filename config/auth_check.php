@@ -13,9 +13,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // checkt of variabele session userid leeg waar wordt je naar login verwijst
+//void is dat het geen return waarde heeft
 function requireLogin(): void {
     if (empty($_SESSION['user_id'])) {
-        header("Location: /pages/login.php");
+        header("Location: pages/login.php");
         exit;
     }
 }
@@ -34,7 +35,7 @@ function requireAnyRole(array $rolesAllowed): void {
         return;
     }
 
-    // Controleer of rol in toegestane rollen staat
+    // Controleer of rol een toegestaande rol is zoniet terug naar index
     if (!in_array($role, $rolesAllowed, true)) {
         header("Location: ../index.php");
         exit;
